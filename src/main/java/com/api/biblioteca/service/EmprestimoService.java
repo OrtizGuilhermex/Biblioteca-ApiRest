@@ -28,8 +28,10 @@ public class EmprestimoService {
         return emprestimoRepository.obterEmprestimoPorID(id);
     }
 
-    public Emprestimo atualizarEmprestimo(Emprestimo emprestimo) throws SQLException{
-        return emprestimoRepository.atualizarEmprestimo(emprestimo);
+    public Emprestimo atualizarEmprestimo(Emprestimo emprestimo,int id) throws SQLException{
+        emprestimo.setId(id);
+        emprestimoRepository.atualizarEmprestimo(emprestimo);
+        return emprestimo;
     }
 
     public void deletarEmprestimo(int id) throws SQLException{

@@ -28,8 +28,10 @@ public class UsuarioService {
         return usuarioRepository.obterUsuarioPorID(id);
     }
 
-    public Usuario atualizarUSuario (Usuario usuario) throws SQLException {
-        return usuarioRepository.atualizarUSuario(usuario);
+    public Usuario atualizarUSuario (Usuario usuario, int id) throws SQLException {
+        usuario.setId(id);
+        usuarioRepository.atualizarUSuario(usuario);
+        return usuario;
     }
 
     public void deletarUsuario(int id) throws SQLException{

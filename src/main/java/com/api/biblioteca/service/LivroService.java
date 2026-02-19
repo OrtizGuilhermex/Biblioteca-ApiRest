@@ -29,8 +29,10 @@ public class LivroService {
         return livroRepository.obterLivroPorID(id);
     }
 
-    public Livro atualizarLivro(Livro livro) throws SQLException{
-        return livroRepository.atualizarUSuario(livro);
+    public Livro atualizarLivro(Livro livro,int id) throws SQLException{
+        livro.setId(id);
+        livroRepository.atualizarUSuario(livro);
+        return livro;
     }
 
     public void deletarLivro(int id) throws SQLException{
