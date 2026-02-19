@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 import java.util.List;
 
+@RestController
+@RequestMapping("/livro")
 public class LivroController {
 
     private final LivroService livroService;
