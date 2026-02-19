@@ -5,6 +5,7 @@ import com.api.biblioteca.utils.Conexao;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,12 +61,12 @@ public class EmprestimoRepository {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                emprestimos.add(new Emprestimo(
-                        rs.getInt("livro_id"),
-                        rs.getInt("usuario_id"),
-                        rs.getDate("data_emprestimo"),
-                        rs.getDate("data_devolucao")
-                ));
+                int livroID = rs.getInt("livro_id");
+                int usuarioID = rs.getInt("usuario_id");
+                LocalDate dataEmprestimo = rs.getDate("data_emprestimo").toLocalDate();
+                LocalDate dataDevolucao = rs.getDate("data_devolucao").toLocalDate();
+                Emprestimo emprestimo = new Emprestimo(livroID,usuarioID,dataEmprestimo,dataDevolucao);
+                emprestimos.add(emprestimo);
             }
         }
         return emprestimos;
@@ -88,12 +89,12 @@ public class EmprestimoRepository {
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                return new Emprestimo(
-                        rs.getInt("livro_id"),
-                        rs.getInt("usuario_id"),
-                        rs.getDate("data_emprestimo"),
-                        rs.getDate("data_devolucao")
-                );
+                int livroID = rs.getInt("livro_id");
+                int usuarioID = rs.getInt("usuario_id");
+                LocalDate dataEmprestimo = rs.getDate("data_emprestimo").toLocalDate();
+                LocalDate dataDevolucao = rs.getDate("data_devolucao").toLocalDate();
+                Emprestimo emprestimo = new Emprestimo(livroID,usuarioID,dataEmprestimo,dataDevolucao);
+                return emprestimo;
             }
         }
         throw new RuntimeException("Livro não encontrado");
