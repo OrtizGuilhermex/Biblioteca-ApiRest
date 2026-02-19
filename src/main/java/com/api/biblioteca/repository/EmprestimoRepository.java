@@ -13,7 +13,7 @@ public class EmprestimoRepository {
 
     public Emprestimo salvarEmprestimo(Emprestimo emprestimo) throws SQLException {
         String query = """
-                INSERT INTO (
+                INSERT INTO emprestimo (
                 livro_id,
                 usuario_id,
                 data_emprestimo,

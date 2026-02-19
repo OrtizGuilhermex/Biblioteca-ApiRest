@@ -18,7 +18,7 @@ public class LivroService {
     }
 
     public Livro salvarLivro(Livro livro) throws SQLException{
-        return livroRepository.salvarUsuario(livro);
+        return livroRepository.salvarLivro(livro);
     }
 
     public List<Livro> obterTodosLivros() throws SQLException{

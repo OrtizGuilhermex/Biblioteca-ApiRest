@@ -14,7 +14,7 @@ public class UsuarioRepository {
 
     public Usuario salvarUsuario(Usuario usuario) throws SQLException{
         String query = """
-                INSERT INTO (
+                INSERT INTO usuario (
                 nome,
                 email
                 )

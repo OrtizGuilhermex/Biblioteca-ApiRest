@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public class LivroRepository {
 
-    public Livro salvarUsuario(Livro livro) throws SQLException {
+    public Livro salvarLivro(Livro livro) throws SQLException {
         String query = """
-                INSERT INTO (
+                INSERT INTO livro (
                 titulo,
                 autor,
                 ano_publicacao
