@@ -116,6 +116,7 @@ public class EmprestimoRepository {
             stmt.setInt(2, emprestimo.getUsuario_id());
             stmt.setDate(3,Date.valueOf(emprestimo.getData_emprestimo().toString()));
             stmt.setDate(4,Date.valueOf(emprestimo.getData_devolucao().toString()));
+            stmt.setInt(5,emprestimo.getId());
             stmt.executeUpdate();
         }
         return emprestimo;
