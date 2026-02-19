@@ -1,72 +1,72 @@
 package com.api.biblioteca.controller;
 
 import com.api.biblioteca.model.Livro;
-import com.api.biblioteca.service.LivroService;
+import com.api.biblioteca.model.Usuario;
+import com.api.biblioteca.service.UsuarioService;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/livro")
-public class LivroController {
+@RequestMapping("/usuario")
+public class UsuarioController {
 
-    private final LivroService livroService;
+    private final UsuarioService usuarioService;
 
-    public LivroController(LivroService livroService) {
-        this.livroService = livroService;
+    public UsuarioController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
     }
 
-
     @PostMapping
-    public Livro salvarLivro(
-            @RequestBody Livro livro
+    public Usuario salvarUsuario(
+            @RequestBody Usuario usuario
     ){
         try{
-            return livroService.salvarLivro(livro);
+            return usuarioService.salvarUsuario(usuario);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @GetMapping
-    public List<Livro> obterTodosLivros(){
+    public List<Usuario> obterTodosUsuarios(){
         try {
-            return livroService.obterTodosLivros();
+            return usuarioService.obterTodosUsuarios();
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @GetMapping("/{id}")
-    public Livro obterLivroPorID(
+    public Usuario obterUsuarioPorID(
             @PathVariable int id
     ){
         try {
-            return livroService.obterLivroPorID(id);
+            return usuarioService.obterUsuarioPorID(id);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @PutMapping("/{id}")
-    public Livro atualizarLivro(
+    public Usuario atualizarUsuario(
             @PathVariable int id,
-            @RequestBody Livro livro
+            @RequestBody Usuario usuario
     ){
         try{
-            return livroService.atualizarLivro(livro,id);
+            return usuarioService.atualizarUSuario(usuario,id);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @DeleteMapping("/{id}")
-    public void deletarLivro(
+    public void deletarUsuario(
             @PathVariable int id
     ){
         try{
-            livroService.deletarLivro(id);
+            usuarioService.deletarUsuario(id);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
