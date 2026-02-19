@@ -49,6 +49,17 @@ public class EmprestimoController {
         }
     }
 
+    @GetMapping("/usuario/{id}")
+    public List<Emprestimo> listarEmprestimosPorUsuario(
+        @PathVariable   int id
+    ){
+        try {
+        List<Emprestimo> lista = emprestimoService.listarEmprestimosPorUsuario(id);
+        return lista;
+    } catch (SQLException e) {
+            throw new RuntimeException("Erro ao buscar empréstimos: " + e.getMessage());    }
+    }
+
     @PutMapping("/{id}")
     public Emprestimo atualizarEmprestimo(
             @PathVariable int id,

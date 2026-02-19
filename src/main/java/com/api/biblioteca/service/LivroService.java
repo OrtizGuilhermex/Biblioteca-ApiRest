@@ -1,7 +1,9 @@
 package com.api.biblioteca.service;
 
 
+import com.api.biblioteca.model.Emprestimo;
 import com.api.biblioteca.model.Livro;
+import com.api.biblioteca.repository.EmprestimoRepository;
 import com.api.biblioteca.repository.LivroRepository;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,11 @@ import java.util.List;
 public class LivroService {
 
     private final LivroRepository livroRepository;
+    private final EmprestimoRepository emprestimoRepository;
 
-    public LivroService(LivroRepository livroRepository) {
+    public LivroService(LivroRepository livroRepository, EmprestimoRepository emprestimoRepository) {
         this.livroRepository = livroRepository;
+        this.emprestimoRepository = emprestimoRepository;
     }
 
     public Livro salvarLivro(Livro livro) throws SQLException{
@@ -31,12 +35,24 @@ public class LivroService {
 
     public Livro atualizarLivro(Livro livro,int id) throws SQLException{
         livro.setId(id);
-        livroRepository.atualizarUSuario(livro);
+        livroRepository.atualizarLivro(livro);
         return livro;
     }
 
     public void deletarLivro(int id) throws SQLException{
-        livroRepository.deletarLivro(id);
+
+        if(emprestimoRepository.emprestimoAtivo(id)){
+            throw new RuntimeException("Operação negada: O livro possui empréstimos pendentes de devolução.");
+        }
+
+        try {
+            livroRepository.deletarLivro(id);
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 1451) {
+                throw new RuntimeException("Não é possível apagar o livro pois ele possui histórico de empréstimos antigos.");
+            }
+            throw e;
+        }
     }
 
 }

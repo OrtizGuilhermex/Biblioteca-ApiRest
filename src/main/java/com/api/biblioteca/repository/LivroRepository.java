@@ -44,7 +44,8 @@ public class LivroRepository {
         List<Livro> livros = new ArrayList<>();
 
         String query = """
-                SELECT titulo
+                SELECT id
+                ,titulo
                 ,autor
                 ,ano_publicacao
                 FROM livro
@@ -57,6 +58,7 @@ public class LivroRepository {
 
             while(rs.next()){
                 livros.add(new Livro(
+                        rs.getInt("id"),
                         rs.getString("titulo"),
                         rs.getString("autor"),
                         rs.getInt("ano_publicacao")
@@ -93,7 +95,7 @@ public class LivroRepository {
         throw new RuntimeException("Livro não encontrado");
     }
 
-    public Livro atualizarUSuario(Livro livro) throws SQLException{
+    public Livro atualizarLivro(Livro livro) throws SQLException{
         String query = """
                 UPDATE livro
                 set titulo = ?,

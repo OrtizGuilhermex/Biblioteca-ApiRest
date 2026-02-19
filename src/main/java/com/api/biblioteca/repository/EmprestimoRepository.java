@@ -48,7 +48,8 @@ public class EmprestimoRepository {
         List<Emprestimo> emprestimos = new ArrayList<>();
 
         String query = """
-                SELECT livro_id,
+                SELECT id, 
+                livro_id,
                 usuario_id,
                 data_emprestimo,
                 data_devolucao
@@ -61,11 +62,12 @@ public class EmprestimoRepository {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
+                int id = rs.getInt("id");
                 int livroID = rs.getInt("livro_id");
                 int usuarioID = rs.getInt("usuario_id");
                 LocalDate dataEmprestimo = rs.getDate("data_emprestimo").toLocalDate();
                 LocalDate dataDevolucao = rs.getDate("data_devolucao").toLocalDate();
-                Emprestimo emprestimo = new Emprestimo(livroID,usuarioID,dataEmprestimo,dataDevolucao);
+                Emprestimo emprestimo = new Emprestimo(id, livroID,usuarioID,dataEmprestimo,dataDevolucao);
                 emprestimos.add(emprestimo);
             }
         }
@@ -135,6 +137,58 @@ public class EmprestimoRepository {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         }
+    }
+
+    public boolean emprestimoAtivo(int id) throws SQLException{
+        String query = """
+                SELECT COUNT(1)
+                FROM emprestimo
+                WHERE livro_id = ? AND data_devolucao IS NULL
+                """;
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                    return rs.getInt(1) > 0;
+            }
+        }
+        return false;
+    }
+
+    public List<Emprestimo> buscarPorUsuario (int id) throws SQLException{
+        List<Emprestimo> emprestimos = new ArrayList<>();
+
+        String query = """
+                SELECT id,
+                livro_id,
+                usuario_id,
+                data_emprestimo,
+                data_devolucao
+                FROM emprestimo
+                WHERE usuario_id = ?
+                """;
+
+        try(Connection conn = Conexao.conectar();
+            PreparedStatement stmt = conn.prepareStatement(query)){
+
+            stmt.setInt(1,id);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                int idUsuario = rs.getInt("id");
+                int livroID = rs.getInt("livro_id");
+                int usuarioID = rs.getInt("usuario_id");
+                LocalDate dataEmprestimo = rs.getDate("data_emprestimo").toLocalDate();
+                LocalDate dataDevolucao = rs.getDate("data_devolucao").toLocalDate();
+                Emprestimo emprestimo = new Emprestimo(idUsuario, livroID,usuarioID,dataEmprestimo,dataDevolucao);
+                emprestimos.add(emprestimo);
+            }
+        }
+        return emprestimos;
     }
 
 }

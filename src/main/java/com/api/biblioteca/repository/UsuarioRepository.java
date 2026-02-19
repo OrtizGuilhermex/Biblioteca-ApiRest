@@ -44,7 +44,8 @@ public class UsuarioRepository {
         List<Usuario> usuarios = new ArrayList<>();
 
         String query = """
-                SELECT nome
+                SELECT id
+                ,nome
                 ,email
                 FROM usuario
                 """;
@@ -56,6 +57,7 @@ public class UsuarioRepository {
 
             while(rs.next()){
                 usuarios.add(new Usuario(
+                        rs.getInt("id"),
                         rs.getString("nome"),
                         rs.getString("email")
                 ));

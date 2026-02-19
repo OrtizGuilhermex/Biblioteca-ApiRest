@@ -1,6 +1,7 @@
 package com.api.biblioteca.service;
 
 import com.api.biblioteca.model.Emprestimo;
+import com.api.biblioteca.model.Livro;
 import com.api.biblioteca.repository.EmprestimoRepository;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,11 @@ public class EmprestimoService {
     }
 
     public Emprestimo salvarEmprestimo(Emprestimo emprestimo) throws SQLException{
+
+        if(emprestimoRepository.emprestimoAtivo(emprestimo.getLivro_id())){
+            throw new RuntimeException("Não é possível realizar o empréstimo: Este livro já está emprestado no momento!");
+        }
+
         return emprestimoRepository.salvarEmprestimo(emprestimo);
     }
 
@@ -32,6 +38,10 @@ public class EmprestimoService {
         emprestimo.setId(id);
         emprestimoRepository.atualizarEmprestimo(emprestimo);
         return emprestimo;
+    }
+
+    public List<Emprestimo> listarEmprestimosPorUsuario(int id) throws SQLException{
+        return emprestimoRepository.buscarPorUsuario(id);
     }
 
     public void deletarEmprestimo(int id) throws SQLException{
