@@ -1,5 +1,8 @@
 package com.api.biblioteca.service;
 
+import com.api.biblioteca.dto.emprestimo.EmprestimoRequestDto;
+import com.api.biblioteca.dto.emprestimo.EmprestimoResponseDto;
+import com.api.biblioteca.mapper.EmprestimoMapper;
 import com.api.biblioteca.model.Emprestimo;
 import com.api.biblioteca.model.Livro;
 import com.api.biblioteca.repository.EmprestimoRepository;
@@ -12,36 +15,56 @@ import java.util.List;
 public class EmprestimoService {
 
     private final EmprestimoRepository emprestimoRepository;
+    private final EmprestimoMapper emprestimoMapper;
 
-    public EmprestimoService(EmprestimoRepository emprestimoRepository) {
+    public EmprestimoService(EmprestimoRepository emprestimoRepository, EmprestimoMapper emprestimoMapper) {
         this.emprestimoRepository = emprestimoRepository;
+        this.emprestimoMapper = emprestimoMapper;
     }
 
-    public Emprestimo salvarEmprestimo(Emprestimo emprestimo) throws SQLException{
+    public EmprestimoResponseDto salvarEmprestimo(
+            EmprestimoRequestDto emprestimoRequestDto) throws SQLException{
 
-        if(emprestimoRepository.emprestimoAtivo(emprestimo.getLivro_id())){
-            throw new RuntimeException("Não é possível realizar o empréstimo: Este livro já está emprestado no momento!");
-        }
+        Emprestimo emprestimo = emprestimoMapper.paraEntidade(emprestimoRequestDto);
 
-        return emprestimoRepository.salvarEmprestimo(emprestimo);
+        emprestimoRepository.salvarEmprestimo(emprestimo);
+
+        return emprestimoMapper.paraResponseDto(emprestimo) ;
     }
 
-    public List<Emprestimo> obterTodosEmprestimos() throws SQLException{
-        return emprestimoRepository.obterTodosEmprestimos();
+    public List<EmprestimoResponseDto> obterTodosEmprestimos() throws SQLException{
+        List<Emprestimo> emprestimoList = emprestimoRepository.obterTodosEmprestimos();
+
+        return emprestimoList.stream()
+                .map(emprestimoMapper::paraResponseDto)
+                .toList();
     }
 
-    public Emprestimo obterEmprestimoPorID(int id) throws SQLException{
-        return emprestimoRepository.obterEmprestimoPorID(id);
+    public EmprestimoResponseDto obterEmprestimoPorID(int id) throws SQLException{
+
+        Emprestimo emprestimo = emprestimoRepository.obterEmprestimoPorID(id);
+
+        return emprestimoMapper.paraResponseDto(emprestimo);
     }
 
-    public Emprestimo atualizarEmprestimo(Emprestimo emprestimo,int id) throws SQLException{
-        emprestimo.setId(id);
-        emprestimoRepository.atualizarEmprestimo(emprestimo);
-        return emprestimo;
+    public EmprestimoResponseDto atualizarEmprestimo(
+            EmprestimoRequestDto emprestimoRequestDto,int id) throws SQLException{
+
+            Emprestimo emprestimo = emprestimoMapper.paraEntidade(emprestimoRequestDto);
+
+            emprestimoRepository.atualizarEmprestimo(emprestimo);
+
+            return emprestimoMapper.paraResponseDto(emprestimo);
     }
 
-    public List<Emprestimo> listarEmprestimosPorUsuario(int id) throws SQLException{
-        return emprestimoRepository.buscarPorUsuario(id);
+    public List<EmprestimoResponseDto> listarEmprestimosPorUsuario(int id) throws SQLException{
+
+        List<Emprestimo> emprestimoList = emprestimoRepository.buscarPorUsuario(id);
+
+        return emprestimoList.stream()
+                .map(emprestimoMapper::paraResponseDto)
+                .toList();
+
     }
 
     public void deletarEmprestimo(int id) throws SQLException{

@@ -1,6 +1,8 @@
 package com.api.biblioteca.controller;
 
 
+import com.api.biblioteca.dto.emprestimo.EmprestimoRequestDto;
+import com.api.biblioteca.dto.emprestimo.EmprestimoResponseDto;
 import com.api.biblioteca.model.Emprestimo;
 import com.api.biblioteca.service.EmprestimoService;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +21,18 @@ public class EmprestimoController {
     }
 
     @PostMapping
-    public Emprestimo salvarEmprestimo(
-            @RequestBody Emprestimo emprestimo
-    ){
+    public EmprestimoResponseDto salvarEmprestimo(
+            @RequestBody EmprestimoRequestDto emprestimoRequestDto
+            ){
         try{
-            return emprestimoService.salvarEmprestimo(emprestimo);
+            return emprestimoService.salvarEmprestimo(emprestimoRequestDto);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @GetMapping
-    public List<Emprestimo> obterTodosEmprestimos(){
+    public List<EmprestimoResponseDto> obterTodosEmprestimos(){
         try {
             return emprestimoService.obterTodosEmprestimos();
         }catch (SQLException e){
@@ -39,7 +41,7 @@ public class EmprestimoController {
     }
 
     @GetMapping("/{id}")
-    public Emprestimo obterEmprestimoPorID(
+    public EmprestimoResponseDto obterEmprestimoPorID(
             @PathVariable int id
     ){
         try {
@@ -50,23 +52,23 @@ public class EmprestimoController {
     }
 
     @GetMapping("/usuario/{id}")
-    public List<Emprestimo> listarEmprestimosPorUsuario(
+    public List<EmprestimoResponseDto> listarEmprestimosPorUsuario(
         @PathVariable   int id
     ){
         try {
-        List<Emprestimo> lista = emprestimoService.listarEmprestimosPorUsuario(id);
+        List<EmprestimoResponseDto> lista = emprestimoService.listarEmprestimosPorUsuario(id);
         return lista;
     } catch (SQLException e) {
             throw new RuntimeException("Erro ao buscar empréstimos: " + e.getMessage());    }
     }
 
     @PutMapping("/{id}")
-    public Emprestimo atualizarEmprestimo(
+    public EmprestimoResponseDto atualizarEmprestimo(
             @PathVariable int id,
-            @RequestBody Emprestimo emprestimo
+            @RequestBody EmprestimoRequestDto emprestimoRequestDto
     ){
         try{
-            return emprestimoService.atualizarEmprestimo(emprestimo,id);
+            return emprestimoService.atualizarEmprestimo(emprestimoRequestDto,id);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
