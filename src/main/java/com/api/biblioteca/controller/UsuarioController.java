@@ -1,5 +1,7 @@
 package com.api.biblioteca.controller;
 
+import com.api.biblioteca.dto.usuario.UsuarioRequestDto;
+import com.api.biblioteca.dto.usuario.UsuarioResponseDto;
 import com.api.biblioteca.model.Livro;
 import com.api.biblioteca.model.Usuario;
 import com.api.biblioteca.service.UsuarioService;
@@ -19,18 +21,18 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public Usuario salvarUsuario(
-            @RequestBody Usuario usuario
+    public UsuarioResponseDto salvarUsuario(
+            @RequestBody UsuarioRequestDto usuarioRequestDto
     ){
         try{
-            return usuarioService.salvarUsuario(usuario);
+            return usuarioService.salvarUsuario(usuarioRequestDto);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @GetMapping
-    public List<Usuario> obterTodosUsuarios(){
+    public List<UsuarioResponseDto> obterTodosUsuarios(){
         try {
             return usuarioService.obterTodosUsuarios();
         }catch (SQLException e){
@@ -39,7 +41,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/{id}")
-    public Usuario obterUsuarioPorID(
+    public UsuarioResponseDto obterUsuarioPorID(
             @PathVariable int id
     ){
         try {
@@ -50,12 +52,12 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public Usuario atualizarUsuario(
+    public UsuarioResponseDto atualizarUsuario(
             @PathVariable int id,
-            @RequestBody Usuario usuario
+            @RequestBody UsuarioRequestDto usuarioRequestDto
     ){
         try{
-            return usuarioService.atualizarUSuario(usuario,id);
+            return usuarioService.atualizarUSuario(usuarioRequestDto,id);
         }catch (SQLException e){
             throw new RuntimeException(e.getMessage());
         }

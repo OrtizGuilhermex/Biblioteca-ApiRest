@@ -1,5 +1,8 @@
 package com.api.biblioteca.service;
 
+import com.api.biblioteca.dto.usuario.UsuarioRequestDto;
+import com.api.biblioteca.dto.usuario.UsuarioResponseDto;
+import com.api.biblioteca.mapper.UsuarioMapper;
 import com.api.biblioteca.model.Usuario;
 import com.api.biblioteca.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
@@ -11,27 +14,48 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final UsuarioMapper usuarioMapper;
 
-    public UsuarioService(UsuarioRepository usuarioRepository) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioMapper usuarioMapper) {
         this.usuarioRepository = usuarioRepository;
+        this.usuarioMapper = usuarioMapper;
     }
 
-    public Usuario salvarUsuario(Usuario usuario)throws SQLException{
-        return usuarioRepository.salvarUsuario(usuario);
+    public UsuarioResponseDto salvarUsuario(
+            UsuarioRequestDto usuarioRequestDto)throws SQLException{
+
+        Usuario usuario = usuarioMapper.paraEntidade(usuarioRequestDto);
+
+        usuarioRepository.salvarUsuario(usuario);
+
+        return usuarioMapper.paraResponseDto(usuario);
     }
 
-    public List<Usuario> obterTodosUsuarios()throws SQLException{
-        return usuarioRepository.obterTodosUsuarios();
+    public List<UsuarioResponseDto> obterTodosUsuarios()throws SQLException{
+        List<Usuario> usuarioList = usuarioRepository.obterTodosUsuarios();
+
+        return usuarioList.stream()
+                .map(usuarioMapper::paraResponseDto)
+                .toList();
+
     }
 
-    public Usuario obterUsuarioPorID(int id)throws SQLException{
-        return usuarioRepository.obterUsuarioPorID(id);
+    public UsuarioResponseDto obterUsuarioPorID(int id)throws SQLException{
+
+        Usuario usuario = usuarioRepository.obterUsuarioPorID(id);
+
+        return usuarioMapper.paraResponseDto(usuario);
     }
 
-    public Usuario atualizarUSuario (Usuario usuario, int id) throws SQLException {
-        usuario.setId(id);
+    public UsuarioResponseDto atualizarUSuario (
+            UsuarioRequestDto usuarioRequestDto, int id) throws SQLException {
+
+        Usuario usuario = usuarioMapper.paraEntidade(usuarioRequestDto);
+
         usuarioRepository.atualizarUSuario(usuario);
-        return usuario;
+        usuario.setId(id);
+
+        return usuarioMapper.paraResponseDto(usuario);
     }
 
     public void deletarUsuario(int id) throws SQLException{
