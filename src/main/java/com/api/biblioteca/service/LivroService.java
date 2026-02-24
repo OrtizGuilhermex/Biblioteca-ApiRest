@@ -1,6 +1,9 @@
 package com.api.biblioteca.service;
 
 
+import com.api.biblioteca.dto.livro.LivroRequestDto;
+import com.api.biblioteca.dto.livro.LivroResponseDto;
+import com.api.biblioteca.mapper.LivroMapper;
 import com.api.biblioteca.model.Emprestimo;
 import com.api.biblioteca.model.Livro;
 import com.api.biblioteca.repository.EmprestimoRepository;
@@ -15,28 +18,52 @@ public class LivroService {
 
     private final LivroRepository livroRepository;
     private final EmprestimoRepository emprestimoRepository;
+    private final LivroMapper livroMapper;
 
-    public LivroService(LivroRepository livroRepository, EmprestimoRepository emprestimoRepository) {
+    public LivroService(LivroRepository livroRepository, EmprestimoRepository emprestimoRepository, LivroMapper livroMapper) {
         this.livroRepository = livroRepository;
         this.emprestimoRepository = emprestimoRepository;
+        this.livroMapper = livroMapper;
     }
 
-    public Livro salvarLivro(Livro livro) throws SQLException{
-        return livroRepository.salvarLivro(livro);
+    public LivroResponseDto salvarLivro(
+            LivroRequestDto livroRequestDto) throws SQLException{
+
+        Livro livro = livroMapper.paraEntidade(livroRequestDto);
+
+        livroRepository.salvarLivro(livro);
+
+        return livroMapper.paraResponseDto(livro);
+
     }
 
-    public List<Livro> obterTodosLivros() throws SQLException{
-        return livroRepository.obterTodoslivros();
+    public List<LivroResponseDto> obterTodosLivros() throws SQLException{
+        List<Livro> livroList = livroRepository.obterTodoslivros();
+
+        return livroList.stream()
+                .map(livroMapper::paraResponseDto)
+                .toList();
+
     }
 
-    public Livro obterLivroPorID(int id) throws SQLException{
-        return livroRepository.obterLivroPorID(id);
+    public LivroResponseDto obterLivroPorID(int id) throws SQLException{
+
+        Livro livro = livroRepository.obterLivroPorID(id);
+
+        return livroMapper.paraResponseDto(livro);
+
     }
 
-    public Livro atualizarLivro(Livro livro,int id) throws SQLException{
-        livro.setId(id);
+    public LivroResponseDto atualizarLivro(
+            LivroRequestDto livroRequestDto,int id) throws SQLException{
+
+        Livro livro = livroMapper.paraEntidade(livroRequestDto);
+
         livroRepository.atualizarLivro(livro);
-        return livro;
+        livro.setId(id);
+
+        return livroMapper.paraResponseDto(livro);
+
     }
 
     public void deletarLivro(int id) throws SQLException{
